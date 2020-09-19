@@ -17,7 +17,7 @@ class Model(nn.Module):
         def _debug():
             if debug:
                 print(x.shape)
-        
+
         x = F.relu(self.conv1(x))
         _debug()
         x = self.pool(x)

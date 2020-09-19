@@ -7,34 +7,31 @@ import wandb
 from imgcl.config import TRAIN_SIZE, WANDB_PROJECT
 from imgcl.training.utils import save_checkpoint
 
+
 class Trainer:
     def __init__(self, model, optimizer, dataset, config):
         self.model = model.to(config['device'])
         self.optimizer = optimizer
         self.config = config
-        
+
         train_dataloader, val_dataloader = self._get_dataloaders(dataset)
         self.train_dataloader = train_dataloader
         self.val_dataloader = val_dataloader
 
-
     def _initialize_wandb(self):
         wandb.init(config=self.config, project=WANDB_PROJECT)
         wandb.watch(self.model)
-
 
     def _get_dataloaders(self, dataset):
         train_len = int(len(dataset) * TRAIN_SIZE)
         val_len = len(dataset) - train_len
         train_dataset, val_dataset = random_split(dataset, [train_len, val_len])
 
-        train_dataloader = DataLoader(train_dataset, batch_size=self.config["train_batch_size"],
-                                shuffle=True)
+        train_dataloader = DataLoader(train_dataset, batch_size=self.config["train_batch_size"], shuffle=True)
         val_dataloader = DataLoader(val_dataset, batch_size=self.config["val_batch_size"], \
                                 shuffle=True)
 
         return train_dataloader, val_dataloader
-
 
     def train(self):
         self.model.train()
@@ -73,7 +70,7 @@ class Trainer:
                         "Val Loss": val_loss, \
                         "Val accuracy": val_accuracy
                     })
-                    
+
                     if val_accuracy > best_val_accuracy:
                         save_checkpoint(self.model, self.config)
                         best_val_accuracy = val_accuracy

@@ -37,8 +37,9 @@ class Trainer:
 
 
     def train(self):
-        criterion = nn.CrossEntropyLoss()
         self.model.train()
+        self._initialize_wandb()
+        criterion = nn.CrossEntropyLoss()
         best_val_accuracy = 0
         for _ in range(self.config['epochs_num']):
             for i, data in tqdm.tqdm(enumerate(self.train_dataloader)):

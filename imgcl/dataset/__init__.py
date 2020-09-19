@@ -10,7 +10,7 @@ class Model(nn.Module):
         self.conv1 = nn.Conv2d(3, 6, 5)
         self.conv2 = nn.Conv2d(6, 16, 3)
         self.conv3 = nn.Conv2d(16, 64, 3)
-        
+
         self.conv2_drop = nn.Dropout2d(0.3)
         self.drop = nn.Dropout(0.2)
 
@@ -21,7 +21,7 @@ class Model(nn.Module):
         def _debug():
             if debug:
                 print(x.shape)
-        
+
         x = F.relu(self.conv1(x))
         _debug()
         x = self.pool(x)

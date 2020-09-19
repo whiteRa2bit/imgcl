@@ -22,5 +22,6 @@ def main():
     trainer = Trainer(model, optimizer, dataset, config)
     trainer.train()
 
+
 if __name__ == '__main__':
     main()

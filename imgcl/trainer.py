@@ -1,15 +1,19 @@
+import logging
+
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader, random_split
 import tqdm
 import wandb
 
-from imgcl.config import TRAIN_SIZE, WANDB_PROJECT
-from imgcl.training.utils import save_checkpoint
+from imgcl.utils import get_checkpoint_path
+from imgcl.config import TRAIN_SIZE, WANDB_PROJECT, TRAIN_CONFIG, INFERENCE_BATCH_SIZE
+
+_logger = logging.getLogger(__name__)
 
 
 class Trainer:
-    def __init__(self, model, optimizer, dataset, config):
+    def __init__(self, model, optimizer, dataset, config=TRAIN_CONFIG):
         self.model = model.to(config['device'])
         self.optimizer = optimizer
         self.config = config
@@ -18,8 +22,8 @@ class Trainer:
         self.train_dataloader = train_dataloader
         self.val_dataloader = val_dataloader
 
-    def _initialize_wandb(self):
-        wandb.init(config=self.config, project=WANDB_PROJECT)
+    def _initialize_wandb(self, project_name=WANDB_PROJECT):
+        wandb.init(config=self.config, project=project_name)
         wandb.watch(self.model)
 
     def _get_dataloaders(self, dataset):
@@ -38,7 +42,8 @@ class Trainer:
         self._initialize_wandb()
         criterion = nn.CrossEntropyLoss()
         best_val_accuracy = 0
-        for _ in range(self.config['epochs_num']):
+        for epoch in range(self.config['epochs_num']):
+            _logger.info(f"Epoch {epoch} started...")
             for i, data in tqdm.tqdm(enumerate(self.train_dataloader)):
                 inputs = data["image"].to(self.config['device'])
                 labels = data["label"].to(self.config['device'])
@@ -72,5 +77,10 @@ class Trainer:
                     })
 
                     if val_accuracy > best_val_accuracy:
-                        save_checkpoint(self.model, self.config)
+                        self.save_checkpoint()
                         best_val_accuracy = val_accuracy
+        _logger.info(f"Training finished. Best validation accuraccy: {best_val_accuracy}")
+
+    def save_checkpoint(self):
+        checkpoint_path = get_checkpoint_path(self.model, self.config)
+        torch.save(self.model.state_dict(), checkpoint_path)

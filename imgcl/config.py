@@ -20,11 +20,14 @@ WANDB_PROJECT = "dl_hse"
 # Training params
 TRAIN_SIZE = 0.95
 TRAIN_CONFIG = {
-    "lr": 1e-4,
-    "epochs_num": 20,
+    "lr": 3e-4,
+    "epochs_num": 10,
     "log_each": 50,
     "device": "cuda",
     "train_batch_size": 64,
     "val_batch_size": 5000,
     "dropout": 0
 }
+
+# Inference params
+INFERENCE_BATCH_SIZE = 128

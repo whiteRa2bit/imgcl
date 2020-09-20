@@ -8,8 +8,9 @@ from imgcl.training.trainer import Trainer
 
 def main():
     config = {
+        "name": "baseline",
         "lr": 3e-4,
-        "epochs_num": 100,
+        "epochs_num": 10,
         "log_each": 50,
         "device": "cuda" if torch.cuda.is_available() else "cpu",
         "train_batch_size": 64,

@@ -1,8 +1,10 @@
 import torch.nn as nn
 import torch.nn.functional as F
 
+from imgcl.nets.abstract_model import AbstractModel
 
-class Model(nn.Module):
+
+class Model(AbstractModel):
     def __init__(self):
         super(Model, self).__init__()
         self.conv1 = nn.Conv2d(3, 6, 5)
@@ -30,3 +32,7 @@ class Model(nn.Module):
         x = self.fc2(x)
         _debug()
         return x
+
+    @property
+    def name(self):
+        return "baseline"

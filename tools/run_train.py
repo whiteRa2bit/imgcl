@@ -1,9 +1,9 @@
 import torch
 
 from imgcl.config import TRAIN_CONFIG, TRAIN_VAL_DIR, TRAIN_VAL_LABELS_PATH
-from imgcl.dataset.dataset_pytorch import ImageDataset
+from imgcl.dataset import ImageDataset
 from imgcl.nets.alexnet import Model
-from imgcl.training.trainer import Trainer
+from imgcl.trainer import Trainer
 
 
 def main():

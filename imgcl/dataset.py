@@ -26,7 +26,7 @@ class ImageDataset(Dataset):
 
     def _transform_idx(self, idx):
         idx = str(idx)
-        dataset = "trainval" if self.labels else "test"
+        dataset = "trainval" if self.labels else "test"  # TODO: (@whiteRa2bit, 2020-09-20) Add to config
         prefix = f"{dataset}_{'0' * (IDX_SIZE - len(idx))}"
         postfix = '.jpg'
         full_idx = prefix + idx + postfix

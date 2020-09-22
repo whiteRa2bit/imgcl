@@ -16,7 +16,7 @@ class Predictor:
     def predict(self, dataset):
         self.model.eval()
         dataloader = DataLoader(dataset, batch_size=INFERENCE_BATCH_SIZE, shuffle=False)
-        
+
         preds = []
         idxs = []
         for data in tqdm.tqdm(dataloader):

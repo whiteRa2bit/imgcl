@@ -19,7 +19,8 @@ class Trainer:
         self.config = config
         self.criterion = nn.CrossEntropyLoss()
 
-        train_dataloader, val_dataloader = self._get_dataloaders(dataset)  # TODO: (@whiteRa2bit, 2020-09-20) Pass dataloader to train
+        train_dataloader, val_dataloader = self._get_dataloaders(
+            dataset)  # TODO: (@whiteRa2bit, 2020-09-20) Pass dataloader to train
         self.train_dataloader = train_dataloader
         self.val_dataloader = val_dataloader
 
@@ -87,14 +88,14 @@ class Trainer:
                 batch_outputs = self.model(batch_inputs)
             labels.append(batch_labels)
             outputs.append(batch_outputs)
-        
+
         labels = torch.cat(labels)
         outputs = torch.cat(outputs)
-        
+
         loss = self.criterion(outputs, labels).item()
         preds = torch.argmax(outputs, axis=1)
         accuracy = torch.sum(preds == labels).cpu().numpy() / len(labels)
-        
+
         return {"loss": loss, "accuracy": accuracy}
 
     def _save_checkpoint(self):

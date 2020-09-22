@@ -7,7 +7,7 @@ import tqdm
 import wandb
 
 from imgcl.utils import get_checkpoint_path
-from imgcl.config import TRAIN_SIZE, WANDB_PROJECT, TRAIN_CONFIG, INFERENCE_BATCH_SIZE
+from imgcl.config import TRAIN_SIZE, WANDB_PROJECT, TRAIN_CONFIG
 
 _logger = logging.getLogger(__name__)
 
@@ -17,8 +17,9 @@ class Trainer:
         self.model = model.to(config['device'])
         self.optimizer = optimizer
         self.config = config
+        self.criterion = nn.CrossEntropyLoss()
 
-        train_dataloader, val_dataloader = self._get_dataloaders(dataset)
+        train_dataloader, val_dataloader = self._get_dataloaders(dataset)  # TODO: (@whiteRa2bit, 2020-09-20) Pass dataloader to train
         self.train_dataloader = train_dataloader
         self.val_dataloader = val_dataloader
 
@@ -40,7 +41,7 @@ class Trainer:
     def train(self):
         self.model.train()
         self._initialize_wandb()
-        criterion = nn.CrossEntropyLoss()
+
         best_val_accuracy = 0
         for epoch in range(self.config['epochs_num']):
             _logger.info(f"Epoch {epoch} started...")
@@ -49,8 +50,8 @@ class Trainer:
                 labels = data["label"].to(self.config['device'])
 
                 self.optimizer.zero_grad()
-                output = self.model(inputs)
-                loss = criterion(output, labels)
+                outputs = self.model(inputs)
+                loss = self.criterion(outputs, labels)
 
                 # compute gradients
                 loss.backward()
@@ -61,15 +62,9 @@ class Trainer:
                 loss = loss.item()
 
                 if i % self.config['log_each'] == 0:
-                    val_data = next(iter(self.val_dataloader))
-                    val_inputs = val_data["image"].to(self.config['device'])
-                    val_labels = val_data["label"].to(self.config['device'])
-                    val_output = self.model(val_inputs)
-
-                    val_loss = criterion(val_output, val_labels)
-                    val_preds = torch.argmax(val_output, axis=1)
-                    val_accuracy = torch.sum(val_preds == val_labels).cpu().numpy() / len(val_labels)
-
+                    val_metrics = self._compute_metrics(self.val_dataloader)
+                    val_loss = val_metrics['loss']
+                    val_accuracy = val_metrics['accuracy']
                     wandb.log({
                         "Train Loss": loss, \
                         "Val Loss": val_loss, \
@@ -77,10 +72,31 @@ class Trainer:
                     })
 
                     if val_accuracy > best_val_accuracy:
-                        self.save_checkpoint()
+                        self._save_checkpoint()
                         best_val_accuracy = val_accuracy
         _logger.info(f"Training finished. Best validation accuraccy: {best_val_accuracy}")
 
-    def save_checkpoint(self):
+    def _compute_metrics(self, dataloader):
+        labels = []
+        outputs = []
+
+        for data in dataloader:
+            batch_inputs = data["image"].to(self.config['device'])
+            batch_labels = data["label"].to(self.config['device'])
+            with torch.no_grad():
+                batch_outputs = self.model(batch_inputs)
+            labels.append(batch_labels)
+            outputs.append(batch_outputs)
+        
+        labels = torch.cat(labels)
+        outputs = torch.cat(outputs)
+        
+        loss = self.criterion(outputs, labels).item()
+        preds = torch.argmax(outputs, axis=1)
+        accuracy = torch.sum(preds == labels).cpu().numpy() / len(labels)
+        
+        return {"loss": loss, "accuracy": accuracy}
+
+    def _save_checkpoint(self):
         checkpoint_path = get_checkpoint_path(self.model, self.config)
         torch.save(self.model.state_dict(), checkpoint_path)

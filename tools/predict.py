@@ -6,7 +6,7 @@ from imgcl.nets.alexnet import Model
 from imgcl.predictor import Predictor
 
 
-def _transform_preds(pred, max_len=4):
+def _transform_preds(pred, max_len=4):  # TODO: (@whiteRa2bit, 2020-09-20) Add to config
     pred = str(pred)
     pred = '0' * (max_len - len(pred)) + pred
     return pred

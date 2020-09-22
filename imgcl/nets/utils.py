@@ -1,5 +1,5 @@
 from imgcl.config import TRAIN_VAL_DIR, TRAIN_VAL_LABELS_PATH
-from imgcl.dataset_pytorch import ImageDataset
+from imgcl.dataset import ImageDataset
 
 
 def debug_model(model):

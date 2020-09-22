@@ -22,10 +22,10 @@ TRAIN_SIZE = 0.95
 TRAIN_CONFIG = {
     "lr": 3e-4,
     "epochs_num": 10,
-    "log_each": 50,
+    "log_each": 25,
     "device": "cuda",
-    "train_batch_size": 64,
-    "val_batch_size": 5000,
+    "train_batch_size": 128,
+    "val_batch_size": 256,
     "dropout": 0
 }
 

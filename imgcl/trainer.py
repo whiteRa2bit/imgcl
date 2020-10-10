@@ -24,6 +24,15 @@ class Trainer:
         self.train_dataloader = train_dataloader
         self.val_dataloader = val_dataloader
 
+        # Lr sheduler
+        self.lr = config['lr_init']
+        self.lr_beta = config['lr_beta']
+        updates_num = self.config['epochs_num'] * len(train_dataloader) - 1
+        self.mult = (config['lr_final'] / self.lr) ** (1 / updates_num)
+        self.avg_loss = 0.
+        self.best_loss = 0.
+        self.batch_num = 0
+
     def _initialize_wandb(self, project_name=WANDB_PROJECT):
         wandb.init(config=self.config, project=project_name)
         wandb.watch(self.model)
@@ -44,6 +53,7 @@ class Trainer:
         self._initialize_wandb()
 
         best_val_accuracy = 0
+
         for epoch in range(self.config['epochs_num']):
             _logger.info(f"Epoch {epoch} started...")
             for i, data in tqdm.tqdm(enumerate(self.train_dataloader)):
@@ -56,10 +66,13 @@ class Trainer:
 
                 # compute gradients
                 loss.backward()
-
                 # make a step
                 self.optimizer.step()
-
+                # update lr
+                res = self._update_lr(loss)
+                if res == -1:
+                    return
+        
                 loss = loss.item()
 
                 if i % self.config['log_each'] == 0:
@@ -69,13 +82,30 @@ class Trainer:
                     wandb.log({
                         "Train Loss": loss, \
                         "Val Loss": val_loss, \
-                        "Val accuracy": val_accuracy
+                        "Val accuracy": val_accuracy, \
+                        "Learning rate": self.lr
                     })
 
                     if val_accuracy > best_val_accuracy:
                         self._save_checkpoint()
                         best_val_accuracy = val_accuracy
         _logger.info(f"Training finished. Best validation accuraccy: {best_val_accuracy}")
+
+    def _update_lr(self, loss):
+        self.batch_num += 1
+        #Compute the smoothed loss
+        self.avg_loss = self.lr_beta * self.avg_loss + (1 - self.lr_beta) * loss.item()
+        self.smoothed_loss = self.avg_loss / (1 - self.lr_beta ** self.batch_num)
+        #Stop if the loss is exploding
+        if self.batch_num > 1 and self.smoothed_loss > 4 * self.best_loss:
+            return -1
+        #Record the best loss
+        if self.smoothed_loss < self.best_loss or self.batch_num == 1:
+            self.best_loss = self.smoothed_loss
+
+        #Update the lr for the next step
+        self.lr *= self.mult
+        self.optimizer.param_groups[0]['lr'] = self.lr
 
     def _compute_metrics(self, dataloader):
         labels = []

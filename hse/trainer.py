@@ -18,7 +18,6 @@ class Trainer:
         self.train_dataloader = train_dataloader
         self.val_dataloader = val_dataloader
 
-
     def _get_dataloaders(self, dataset):
         train_len = int(len(dataset) * TRAIN_SIZE)
         val_len = len(dataset) - train_len
@@ -62,9 +61,11 @@ class Trainer:
                     if val_accuracy > best_val_accuracy:
                         self._save_checkpoint()
                         best_val_accuracy = val_accuracy
-        print("Best val accuracy:",  best_val_accuracy)
+        print("Best val accuracy:", best_val_accuracy)
 
     def _compute_metrics(self, dataloader):
+        self.model.eval()
+
         labels = []
         outputs = []
 
@@ -82,6 +83,8 @@ class Trainer:
         loss = self.criterion(outputs, labels).item()
         preds = torch.argmax(outputs, axis=1)
         accuracy = torch.sum(preds == labels).cpu().numpy() / len(labels)
+
+        self.model.train()
 
         return {"loss": loss, "accuracy": accuracy}
 

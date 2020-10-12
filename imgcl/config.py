@@ -27,7 +27,7 @@ TRAIN_CONFIG = {
     "device": "cuda",
     "train_batch_size": 64,
     "val_batch_size": 128,
-    "dropout": 0,
+    "dropout": 0.1,
     "l2_coef": 0,
 }
 

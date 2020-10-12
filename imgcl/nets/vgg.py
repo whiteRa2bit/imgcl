@@ -37,10 +37,10 @@ class Model(AbstractModel):
         # self.batchnorm5 = nn.BatchNorm2d(1024)
 
         self.classifier = nn.Sequential(
-            nn.Linear(256 * 2 * 2, 512),
+            nn.Linear(256 * 3 * 3, 1024),
             nn.LeakyReLU(inplace=True),
             nn.Dropout(config['dropout']),
-            nn.Linear(512, 256),
+            nn.Linear(1024, 256),
             nn.LeakyReLU(inplace=True),
             nn.Dropout(config['dropout']),
             nn.Linear(256, 200)
@@ -124,7 +124,7 @@ class Model(AbstractModel):
         # x = self.batchnorm5(x)
         # _debug()
 
-        x = x.view(-1, 256 * 2 * 2)
+        x = x.view(-1, 256 * 3 * 3)
         # x = x.view(-1, 512 * 3 * 3)
         _debug()
 

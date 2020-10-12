@@ -17,7 +17,7 @@ class ImageDataset(Dataset):
         self.transforms = transforms.Compose([
             transforms.ToPILImage(),
             # transforms.ColorJitter(brightness=0.2, contrast=0.4, saturation=0, hue=0),
-            transforms.Resize((96, 96)),
+            transforms.Resize((128, 128)),
             # transforms.RandomVerticalFlip(),
             # transforms.RandomAffine(10, translate=None, scale=None, shear=None, resample=False, fillcolor=0),
             transforms.ToTensor()

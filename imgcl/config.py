@@ -24,11 +24,11 @@ TRAIN_CONFIG = {
     "lr_update_each": 50,
     "epochs_num": 8,
     "log_each": 25,
-    "device": "cuda:2",
+    "device": "cuda",
     "train_batch_size": 64,
     "val_batch_size": 128,
     "dropout": 0,
-    "l2_coef": 0,
+    "l2_coef": 0.01,
 }
 
 # Inference params

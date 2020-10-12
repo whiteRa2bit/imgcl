@@ -35,7 +35,7 @@ class Model(AbstractModel):
         # self.batchnorm5 = nn.BatchNorm2d(1024)
 
         self.classifier = nn.Sequential(
-            nn.Linear(256 * 2 * 2, 200),
+            nn.Linear(256 * 4 * 4, 200),
             # nn.LeakyReLU(inplace=True),
             # nn.Dropout(config['dropout']),
             # nn.Linear(512, 256),
@@ -72,8 +72,6 @@ class Model(AbstractModel):
         _debug()
         x = F.leaky_relu(self.conv2_2(x))
         _debug()
-        x = self.pool(x)
-        _debug()
         x = F.leaky_relu(self.conv2_3(x))
         _debug()
         x = self.pool(x)
@@ -85,11 +83,7 @@ class Model(AbstractModel):
         _debug()
         x = F.leaky_relu(self.conv3_2(x))
         _debug()
-        x = self.pool(x)
-        _debug()
         x = F.leaky_relu(self.conv3_3(x))
-        _debug()
-        x = F.leaky_relu(self.conv3_4(x))
         _debug()
         x = self.pool(x)
         _debug()
@@ -118,7 +112,7 @@ class Model(AbstractModel):
         # x = self.batchnorm5(x)
         # _debug()
 
-        x = x.view(-1, 256 * 2 * 2)
+        x = x.view(-1, 256 * 4 * 4)
         # x = x.view(-1, 512 * 3 * 3)
         _debug()
 

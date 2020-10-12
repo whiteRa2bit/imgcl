@@ -20,7 +20,7 @@ WANDB_PROJECT = "dl_hse"
 # Training params
 TRAIN_SIZE = 0.95
 TRAIN_CONFIG = {
-    "lr": 3e-4,
+    "lr": 1e-3,
     "lr_update_each": 50,
     "epochs_num": 15,
     "log_each": 25,

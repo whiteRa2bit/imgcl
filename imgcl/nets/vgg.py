@@ -7,21 +7,23 @@ from imgcl.nets.abstract_model import AbstractModel
 class Model(AbstractModel):
     def __init__(self, config):
         super(Model, self).__init__()
-        self.pool = nn.MaxPool2d(3, 3)
+        self.pool = nn.MaxPool2d(3, 2)
         # Conv 1
         self.conv1_1 = nn.Conv2d(3, 64, 3, padding=1)
         self.conv1_2 = nn.Conv2d(64, 64, 3, padding=1)
-        # self.conv1_3 = nn.Conv2d(64, 64, 3, padding=1)
+        self.conv1_3 = nn.Conv2d(64, 64, 3, padding=1)
         self.batchnorm1 = nn.BatchNorm2d(64)
         # Conv 2
         self.conv2_1 = nn.Conv2d(64, 128, 3, padding=1)
         self.conv2_2 = nn.Conv2d(128, 128, 3, padding=1)
         self.conv2_3 = nn.Conv2d(128, 128, 3, padding=1)
+        self.conv2_4 = nn.Conv2d(128, 128, 3, padding=1)
         self.batchnorm2 = nn.BatchNorm2d(128)
         # Conv 3
         self.conv3_1 = nn.Conv2d(128, 256, 3, padding=1)
         self.conv3_2 = nn.Conv2d(256, 256, 3, padding=1)
         self.conv3_3 = nn.Conv2d(256, 256, 3, padding=1)
+        self.conv3_4 = nn.Conv2d(256, 256, 3, padding=1)
         self.batchnorm3 = nn.BatchNorm2d(256)
         # Conv 4
         # self.conv4_1 = nn.Conv2d(256, 512, 3, padding=1)
@@ -35,10 +37,10 @@ class Model(AbstractModel):
         # self.batchnorm5 = nn.BatchNorm2d(1024)
 
         self.classifier = nn.Sequential(
-            nn.Linear(256 * 3 * 3, 1024),
+            nn.Linear(256 * 2 * 2, 512),
             nn.LeakyReLU(inplace=True),
             nn.Dropout(config['dropout']),
-            nn.Linear(1024, 256),
+            nn.Linear(512, 256),
             nn.LeakyReLU(inplace=True),
             nn.Dropout(config['dropout']),
             nn.Linear(256, 200)
@@ -63,7 +65,7 @@ class Model(AbstractModel):
         _debug()
         x = F.leaky_relu(self.conv1_2(x))
         _debug()
-        # x = F.leaky_relu(self.conv1_3(x))
+        x = F.leaky_relu(self.conv1_3(x))
         # _debug()
         x = self.pool(x)
         x = self.batchnorm1(x)
@@ -74,7 +76,11 @@ class Model(AbstractModel):
         _debug()
         x = F.leaky_relu(self.conv2_2(x))
         _debug()
+        x = self.pool(x)
+        _debug()
         x = F.leaky_relu(self.conv2_3(x))
+        _debug()
+        x = F.leaky_relu(self.conv2_4(x))
         _debug()
         x = self.pool(x)
         x = self.batchnorm2(x)
@@ -85,7 +91,11 @@ class Model(AbstractModel):
         _debug()
         x = F.leaky_relu(self.conv3_2(x))
         _debug()
+        x = self.pool(x)
+        _debug()
         x = F.leaky_relu(self.conv3_3(x))
+        _debug()
+        x = F.leaky_relu(self.conv3_4(x))
         _debug()
         x = self.pool(x)
         _debug()
@@ -114,7 +124,7 @@ class Model(AbstractModel):
         # x = self.batchnorm5(x)
         # _debug()
 
-        x = x.view(-1, 256 * 3 * 3)
+        x = x.view(-1, 256 * 2 * 2)
         # x = x.view(-1, 512 * 3 * 3)
         _debug()
 

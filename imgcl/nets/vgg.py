@@ -34,13 +34,13 @@ class Model(AbstractModel):
         # self.batchnorm5 = nn.BatchNorm2d(1024)
 
         self.classifier = nn.Sequential(
-            nn.Linear(256 * 2 * 2, 512),
-            nn.LeakyReLU(inplace=True),
-            nn.Dropout(config['dropout']),
-            nn.Linear(512, 256),
-            nn.LeakyReLU(inplace=True),
-            nn.Dropout(config['dropout']),
-            nn.Linear(256, 200)
+            nn.Linear(256 * 2 * 2, 200),
+            # nn.LeakyReLU(inplace=True),
+            # nn.Dropout(config['dropout']),
+            # nn.Linear(512, 256),
+            # nn.LeakyReLU(inplace=True),
+            # nn.Dropout(config['dropout']),
+            # nn.Linear(256, 200)
         )
         # self.classifier = nn.Sequential(
         #     nn.Linear(512 * 9, 1024),

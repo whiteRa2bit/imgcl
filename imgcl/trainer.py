@@ -64,6 +64,7 @@ class Trainer:
                 loss = loss.item()
 
                 if i % self.config['log_each'] == 0:
+                    optimizer.param_groups[0]['lr'] *= 0.99
                     val_metrics = self._compute_metrics(self.val_dataloader)
                     val_loss = val_metrics['loss']
                     val_sample = val_metrics['sample']
@@ -81,7 +82,8 @@ class Trainer:
                         "Train Loss": loss, \
                         "Val Loss": val_loss, \
                         "Val accuracy": val_accuracy, \
-                        "Images": fig
+                        "Images": fig, \
+                        "Learning rate": optimizer.param_groups[0]['lr']
                     })
                     plt.clf()
 

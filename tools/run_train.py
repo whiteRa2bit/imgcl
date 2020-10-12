@@ -9,7 +9,7 @@ from imgcl.trainer import Trainer
 def main():
     dataset = ImageDataset(TRAIN_VAL_DIR, TRAIN_VAL_LABELS_PATH)
     model = Model(TRAIN_CONFIG)
-    optimizer = torch.optim.Adam(model.parameters(), lr=TRAIN_CONFIG["lr_init"], weight_decay=TRAIN_CONFIG['l2_coef'])
+    optimizer = torch.optim.Adam(model.parameters(), lr=TRAIN_CONFIG["lr"], weight_decay=TRAIN_CONFIG['l2_coef'])
     trainer = Trainer(model, optimizer, dataset, TRAIN_CONFIG)
     trainer.train()
 

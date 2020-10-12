@@ -1,4 +1,4 @@
-from imgcl.nets.vgg import Model
+from imgcl.nets.resnet import Model
 from imgcl.nets.utils import debug_model
 from imgcl.config import TRAIN_CONFIG
 

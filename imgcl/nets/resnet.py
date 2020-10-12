@@ -62,8 +62,7 @@ class Model(AbstractModel):
         _debug(out1_1)
         out1_2 = F.leaky_relu(self.conv1_2(out1_1))
         _debug(out1_2)
-        # out1 = self.batchnorm1(out1_1 + out1_2)
-        out1 = out1_1 + out1_2
+        out1 = self.batchnorm1(out1_1 + out1_2)
         _debug(out1_2)
 
         # Conv 2
@@ -71,8 +70,7 @@ class Model(AbstractModel):
         _debug(out2_1)
         out2_2 = F.leaky_relu(self.conv2_2(out2_1))
         _debug(out2_2)
-        # out2 = self.batchnorm2(out2_1 + out2_2)
-        out2 = out2_1 + out2_2
+        out2 = self.batchnorm2(out2_1 + out2_2)
         _debug(out2)
 
         # Conv 3
@@ -82,8 +80,7 @@ class Model(AbstractModel):
         _debug(out3_2)
         out3_3 = F.leaky_relu(self.conv3_3(out3_2))
         _debug(out3_2)
-        # out3 = self.batchnorm3(out3_1 + out3_3)
-        out3 = out3_1 + out3_3
+        out3 = self.batchnorm3(out3_1 + out3_3)
         _debug(out3)
 
         # Conv 4

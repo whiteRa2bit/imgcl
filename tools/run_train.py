@@ -2,7 +2,7 @@ import torch
 
 from imgcl.config import TRAIN_CONFIG, TRAIN_VAL_DIR, TRAIN_VAL_LABELS_PATH
 from imgcl.dataset import ImageDataset
-from imgcl.nets.resnet import Model
+from imgcl.nets.vgg import Model
 from imgcl.trainer import Trainer
 
 

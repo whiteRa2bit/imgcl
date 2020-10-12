@@ -25,7 +25,7 @@ TRAIN_CONFIG = {
     "epochs_num": 15,
     "log_each": 25,
     "device": "cuda",
-    "train_batch_size": 64,
+    "train_batch_size": 256,
     "val_batch_size": 128,
     "dropout": 0,
     "l2_coef": 0,

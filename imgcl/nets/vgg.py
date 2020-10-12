@@ -21,6 +21,7 @@ class Model(AbstractModel):
         self.conv3_1 = nn.Conv2d(128, 256, 3, padding=1)
         self.conv3_2 = nn.Conv2d(256, 256, 3, padding=1)
         self.conv3_3 = nn.Conv2d(256, 256, 3, padding=1)
+        self.conv3_4 = nn.Conv2d(256, 256, 3, padding=1)
         self.batchnorm3 = nn.BatchNorm2d(256)
         # Conv 4
         # self.conv4_1 = nn.Conv2d(256, 512, 3, padding=1)
@@ -87,6 +88,8 @@ class Model(AbstractModel):
         x = self.pool(x)
         _debug()
         x = F.leaky_relu(self.conv3_3(x))
+        _debug()
+        x = F.leaky_relu(self.conv3_4(x))
         _debug()
         x = self.pool(x)
         _debug()

@@ -4,14 +4,24 @@ import pandas as pd
 from skimage import io
 import torch
 from torch.utils.data import Dataset
+from torchvision import transforms
 
 from imgcl.config import IDX_SIZE, ID_COLUMN, LABEL_COLUMN
 
 
 class ImageDataset(Dataset):
-    def __init__(self, data_dir, labels_path=None):
+    def __init__(self, data_dir, labels_path=None, is_train=True):
         self.data_dir = data_dir
         self.labels = self._get_labels(labels_path)
+        self.is_train = is_train
+        self.transforms = transforms.Compose([
+            transforms.ToPILImage(),
+            transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0, hue=0),
+            # transforms.Resize((96, 96)),
+            # transforms.RandomVerticalFlip(),
+            # transforms.RandomAffine(10, translate=None, scale=None, shear=None, resample=False, fillcolor=0),
+            transforms.ToTensor()
+        ])
 
     def __len__(self):
         return len(os.listdir(self.data_dir)) - 1
@@ -20,7 +30,12 @@ class ImageDataset(Dataset):
         idx = self._transform_idx(idx)
         img_path = os.path.join(self.data_dir, idx)
         img = io.imread(img_path)
-        img_tensor = torch.from_numpy(img).permute(2, 0, 1)
+
+        # if self.is_train:
+        img_tensor = self.transforms(img)
+        # else:
+        #     img_tensor = torch.from_numpy(img).permute(2, 0, 1).float()
+        #     img_tensor = img_tensor / 255 - 0.5
         label = self.labels.get(idx, -1)
         return {"idx": idx, "image": img_tensor.float(), "label": label}
 
